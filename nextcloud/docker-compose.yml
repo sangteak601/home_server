@@ -1,0 +1,28 @@
+services:
+  nextcloud:
+    image: lscr.io/linuxserver/nextcloud
+    container_name: nextcloud
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - ./test/nextcloud/config:/config  # Modify this path to desired location
+      - ./test/nextcloud/data:/data  # Modify this path to desired location
+    depends_on:
+      - nextclouddb
+    ports:
+      - 443:443
+    restart: unless-stopped
+
+  nextclouddb:
+    image: lscr.io/linuxserver/mariadb
+    container_name: nextclouddb
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MYSQL_ROOT_PASSWORD=insecure  # Change this password
+      - TZ=Europe/London
+    volumes:
+      - ./test/nextclouddb:/config  # Modify this path to desired location
+    restart: unless-stopped
