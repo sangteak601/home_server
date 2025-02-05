@@ -1,0 +1,15 @@
+services:
+  inotify:
+    build: .
+    image: inotify-photoprism-indexer
+    container_name: inotify
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - INDEXING_INTERVAL=10
+      - MONITOR_DIR=/monitoring
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./test/dir1:/monitoring/dir1  # Modify this path to desired location
+      - ./test/dir2:/monitoring/dir2  # Modify this path to desired location
+    restart: unless-stopped
