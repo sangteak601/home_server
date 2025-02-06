@@ -8,8 +8,8 @@ inotifywait -m -e create -e move -r --format "%f" ${MONITOR_DIR} \
     
     # Schedule a job to run after DELAY seconds
     ( 
-      docker exec photoprism photoprism index --cleanup
       sleep "${INDEXING_INTERVAL:-60}"
+      docker exec photoprism photoprism index --cleanup
       rm /tmp/photoprism_index_scheduled
     ) &
   fi
