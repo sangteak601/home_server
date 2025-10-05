@@ -1,7 +1,15 @@
 [
-  {
-    "id": "redeploy-webhook",
-    "execute-command": "/var/scripts/redeploy.sh",
-    "command-working-directory": "/var/webhook"
-  }
+    {
+        "id": "add-music",
+        "execute-command": "/config/hooks/add_music.sh",
+        "command-working-directory": "/config/hooks",
+        "pass-arguments-to-command": [
+            {
+                "source": "payload",
+                "name": "url"
+            }
+        ],
+        "include-command-output-in-response": true,
+        "response-message": "Request received. Processing..."
+    }
 ]
