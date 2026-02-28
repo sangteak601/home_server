@@ -11,3 +11,20 @@ services:
     network_mode: host
     environment:
       TZ: Europe/London
+
+  otbr:
+    image: bnutzer/otbr-tcp
+    network_mode: host
+    restart: unless-stopped
+    privileged: true
+    cap_drop:
+      - NET_ADMIN   # Should prevent iptables/ipset updates
+      - NET_RAW     # No raw network access
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0  # update this to your path
+    environment:
+      - RCP_USE_TCP=0
+      - RCP_TTY=/dev/ttyUSB0  # update this to your path
+      - OTBR_BACKBONE_IF=eth0  # update this to your interface
+    volumes:
+      - ./otbr-data:/var/lib/thread   # update this to your path
