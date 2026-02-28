@@ -13,18 +13,58 @@ services:
       TZ: Europe/London
 
   otbr:
-    image: bnutzer/otbr-tcp
-    network_mode: host
+    container_name: otbr
+    image: ghcr.io/ownbee/hass-otbr-docker
     restart: unless-stopped
-    privileged: true
-    cap_drop:
-      - NET_ADMIN   # Should prevent iptables/ipset updates
-      - NET_RAW     # No raw network access
-    devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0  # update this to your path
+    privileged: true # don't change this !
+    network_mode: host # don't change this !
+    cap_add:
+      - SYS_ADMIN
+      - NET_ADMIN
     environment:
-      - RCP_USE_TCP=0
-      - RCP_TTY=/dev/ttyUSB0  # update this to your path
-      - OTBR_BACKBONE_IF=eth0  # update this to your interface
+      DEVICE: "/dev/ttyUSB0"  # update this to your device
+      BACKBONE_IF: eth0  # update this to your backbone interface
+      FLOW_CONTROL: 1
+      FIREWALL: 1
+      NAT64: 1
+      BAUDRATE: 460800
+      OTBR_REST_PORT: 8081
+      OTBR_WEB_PORT: 7586
+      # OTBR_WEB_INTERFACE: "0.0.0.0"
+      AUTOFLASH_FIRMWARE: 0
+      OTBR_LOG_LEVEL: error
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0 # update this to your device
+      - /dev/net/tun:/dev/net/tun
     volumes:
-      - ./otbr-data:/var/lib/thread   # update this to your path
+      - ./otbr_data:/data/thread  # update this to your path
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: "1m"
+
+  # Matter server example (the standard image)
+  matter-server:
+    image: ghcr.io/home-assistant-libs/python-matter-server:stable
+    container_name: matter-server
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - ./matter_data:/data/  # update this to your path
+      - /run/dbus:/run/dbus:ro  # For bluetooth
+      - /etc/localtime:/etc/localtime:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: "1m"
+    command: >
+      --storage-path /data
+      --paa-root-cert-dir /data/credentials
+      --bluetooth-adapter 0
+      --log-level-sdk progress
+      --primary-interface eth0  # update this to your primary interface
