@@ -11,5 +11,18 @@
         ],
         "include-command-output-in-response": true,
         "response-message": "Request received. Processing..."
+    },
+    {
+        "id": "delete-music",
+        "execute-command": "/config/hooks/delete_music.sh",
+        "command-working-directory": "/config/hooks",
+        "pass-arguments-to-command": [
+            {
+                "source": "payload",
+                "name": "filename"
+            }
+        ],
+        "include-command-output-in-response": true,
+        "response-message": "Request received. Processing..."
     }
 ]
