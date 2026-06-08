@@ -1,0 +1,10 @@
+services:
+  restic:
+    image: restic/restic:latest
+    container_name: restic
+    volumes:
+      - ./data/source:/data:ro          # Update this to your source directory
+      - ./data/backup/restic-repo:/repo # Update this to your backup directory
+    environment:
+      - RESTIC_REPOSITORY=/repo
+      - RESTIC_PASSWORD=password    # Change this to a secure password
