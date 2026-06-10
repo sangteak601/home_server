@@ -8,3 +8,4 @@ services:
     environment:
       - RESTIC_REPOSITORY=/repo
       - RESTIC_PASSWORD=password    # Change this to a secure password
+      - RESTIC_HOST=backup     # Optional: Set a custom hostname for the container
