@@ -1,0 +1,16 @@
+services:
+  mealie:
+    image: ghcr.io/mealie-recipes/mealie:latest
+    container_name: mealie
+    restart: unless-stopped
+    ports:
+        - "9925:9000"
+    volumes:
+      - ./data:/app/data/   # Update this to your data directory
+    environment:
+      # Set Backend ENV Variables Here
+      ALLOW_SIGNUP: "false"
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/London
+      BASE_URL: "http://localhost:9925"
